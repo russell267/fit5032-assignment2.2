@@ -65,7 +65,7 @@ const validateName = (blur) => {
 
 const validatePassword = (blur) => {
   const password = formData.value.password
-  const minLength = 8
+  const minLength = 9
   const hasUppercase = /[A-Z]/.test(password)
   const hasLowercase = /[a-z]/.test(password)
   const hasNumber = /\d/.test(password)
@@ -92,7 +92,7 @@ const validatePassword = (blur) => {
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-8 offset-md-2">
-        <h1 class="text-center">Register</h1>
+        <h1 class="text-center">Register the account</h1>
         <!-- <p class="text-center">
           This form now includes validation. Registered users are displayed in a data table below
           (PrimeVue).
