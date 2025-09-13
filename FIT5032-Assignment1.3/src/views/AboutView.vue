@@ -1,8 +1,14 @@
-<!-- File: src/views/About.vue -->
+<!-- File: src/views/AboutView.vue -->
 <template>
   <div class="about">
     <h1>About Our Men's health</h1>
     <p>Welcome to our men's health activity!</p>
+
+    <!-- ✅ 新增：XSS 防护演示（富文本只通过 SanitizedHtml 渲染） -->
+    <section class="rating-card" aria-labelledby="safe-html-demo">
+      <h2 id="safe-html-demo">Safe Rich Text Demo</h2>
+      <SanitizedHtml :html="richDescription" />
+    </section>
 
     <!-- ==== Section 1: Men's BMI ==== -->
     <section class="rating-card" aria-labelledby="bmi-label">
@@ -110,7 +116,14 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import SanitizedHtml from '@/components/SanitizedHtml.vue'   // ✅ 引入安全渲染组件
 
+/* 富文本示例（可来自后端/Firestore），会被 DOMPurify 净化 */
+const richDescription = ref(`
+  <p>Welcome to <strong>our men's health</strong> portal.</p>
+  <p>See more at <a href="https://example.com">official site</a>.</p>
+  <img src=x onerror="alert('XSS!')" /> <!-- 将被净化，不会执行 -->
+`)
 
 const STORAGE_KEY = 'libraryRatings'
 const hasWindow = typeof window !== 'undefined'
@@ -131,12 +144,10 @@ function getStore () { return safeParse(safeGet(STORAGE_KEY, '{}'), {}) }
 function setStore (obj) { safeSet(STORAGE_KEY, JSON.stringify(obj || {})) }
 function fmt (num, digits = 1) { const n = Number(num); return Number.isFinite(n) ? n.toFixed(digits) : (0).toFixed(digits) }
 
-
 function renderStars (val) {
   const r = Math.round(Number(val) || 0)
   return '★★★★★'.slice(0, Math.min(5, Math.max(0, r))).padEnd(5, '☆')
 }
-
 
 function makeRating (aspect) {
   const currentRating = ref(0)
@@ -164,11 +175,9 @@ function makeRating (aspect) {
     }
   }
 
-  
   const displayAvg = computed(() => Number(currentRating.value || 0))
   const displayTotal = computed(() => (currentRating.value > 0 ? 1 : 0))
 
-  
   const isZero = computed(() => currentRating.value === 0)
   const canSubmit = computed(() => isZero.value || submitting.value)
   function setRating (n) { currentRating.value = n }
@@ -189,16 +198,12 @@ function makeRating (aspect) {
 
   return {
     aspect,
-    // state
     currentRating, submitting, feedback, hasSubmitted,
-    // displayed numbers
     displayAvg, displayTotal,
-    // helpers
     isZero, canSubmit, setRating, clear, isSelected, isChecked, submit,
     renderStars
   }
 }
-
 
 const bmi   = makeRating("Men's BMI")
 const bp    = makeRating("Men's Blood Pressure")
@@ -207,7 +212,6 @@ const sleep = makeRating("Men's Sleep Quality")
 
 <style scoped>
 .about { max-width: 920px; margin: 0 auto; padding: 24px; }
-
 
 .rating-card {
   margin-top: 16px;
