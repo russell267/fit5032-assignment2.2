@@ -4,7 +4,7 @@
     <h1>About Our Men's health</h1>
     <p>Welcome to our men's health activity!</p>
 
-    <!-- ✅ 新增：XSS 防护演示（富文本只通过 SanitizedHtml 渲染） -->
+    <!-- Added: XSS protection demo (rich text is only rendered through SanitizedHtml).-->
     <section class="rating-card" aria-labelledby="safe-html-demo">
       <h2 id="safe-html-demo">Safe Rich Text Demo</h2>
       <SanitizedHtml :html="richDescription" />
@@ -116,13 +116,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import SanitizedHtml from '@/components/SanitizedHtml.vue'   // ✅ 引入安全渲染组件
+import SanitizedHtml from '@/components/SanitizedHtml.vue'   //import the XSS component
 
-/* 富文本示例（可来自后端/Firestore），会被 DOMPurify 净化 */
+/* It will be cleaned*/
 const richDescription = ref(`
   <p>Welcome to <strong>our men's health</strong> portal.</p>
   <p>See more at <a href="https://example.com">official site</a>.</p>
-  <img src=x onerror="alert('XSS!')" /> <!-- 将被净化，不会执行 -->
+  <img src=x onerror="alert('XSS!')" /> <!-- This will be sanitized and blocked from executing.-->
 `)
 
 const STORAGE_KEY = 'libraryRatings'

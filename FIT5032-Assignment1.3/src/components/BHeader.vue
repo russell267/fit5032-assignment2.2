@@ -32,6 +32,9 @@ const logout = () => {
           <router-link to="/FireRegister" class="nav-link" active-class="active">FireRegister</router-link>
         </li>
         <li class="nav-item">
+          <router-link to="/addBook" class="nav-link" active-class="active">Add Book</router-link>
+        </li>
+        <li class="nav-item">
           <button v-if="isAuthenticated" class="nav-link" @click="logout">Logout</button>
         </li>
       </ul>
